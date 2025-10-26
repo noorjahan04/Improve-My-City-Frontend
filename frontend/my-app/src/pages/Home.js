@@ -6,8 +6,16 @@ import axios from "axios";
 
 export default function Home() {
   const [reviews, setReviews] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Default citizen feedbacks
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // defaultReviews and fetch logic stays the same
   const defaultReviews = [
     {
       name: "Aarav",
@@ -42,7 +50,7 @@ export default function Home() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get("https://improve-my-city-backend-hj52.onrender.com/api/review");
+        const res = await axios.get("http://localhost:5000/api/review");
         if (res.data.reviews && res.data.reviews.length > 0) {
           const mapped = res.data.reviews.map((r) => ({
             name: r.name || "User",
@@ -68,7 +76,7 @@ export default function Home() {
       <Navbar />
 
       {/* Video Background */}
-      <div style={{ position: "relative", height: "75vh", overflow: "hidden" }}>
+      <div style={{ position: "relative", height: isMobile ? "50vh" : "75vh", overflow: "hidden" }}>
         <video
           autoPlay
           loop
@@ -96,21 +104,25 @@ export default function Home() {
             transform: "translate(-50%, -50%)",
             textAlign: "center",
             color: "white",
-            width: "60%",
-            maxWidth: "700px",
-            padding: "2rem",
+            width: isMobile ? "90%" : "60%",
+            maxWidth: isMobile ? "95%" : "700px",
+            padding: isMobile ? "1rem" : "2rem",
             borderRadius: "20px",
             backgroundColor: "rgba(0,0,0,0.6)",
             boxShadow: "0 8px 25px rgba(255, 255, 255, 0.5)",
           }}
         >
-          <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>Welcome to Improve My City</h1>
-          <p style={{ fontSize: "1.3rem", maxWidth: "600px", margin: "0 auto" }}>
+          <h1 style={{ fontSize: isMobile ? "1.8rem" : "3rem", marginBottom: "1rem" }}>
+            Welcome to Improve My City
+          </h1>
+          <p style={{ fontSize: isMobile ? "1rem" : "1.3rem", maxWidth: "600px", margin: "0 auto" }}>
             Empower citizens to report civic issues like potholes, garbage, or streetlight failures — and track them until resolved.
           </p>
         </div>
       </div>
 
+      {/* Rest of the page remains the same */}
+      
       {/* Services */}
       <h1
         style={{
@@ -389,3 +401,5 @@ export default function Home() {
     </div>
   );
 }
+
+  

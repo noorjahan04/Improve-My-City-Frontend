@@ -1,8 +1,18 @@
+import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 
 export default function About() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const creators = [
     { name: "Hemavathi K", role: "Full-Stack Developer", img: "/assets/p1.png" },
     { name: "Noor Jahan", role: "UI/UX Designer", img: "/assets/p2.png" },
@@ -31,7 +41,6 @@ export default function About() {
           }}
         >
           <source src="/assets/about.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
         </video>
 
         {/* Overlay */}
@@ -51,7 +60,7 @@ export default function About() {
         <div
           style={{
             fontFamily: "Arial, sans-serif",
-            padding: "60px 40px",
+            padding: isMobile ? "40px 20px" : "60px 40px",
             color: "white",
             position: "relative",
             zIndex: 1,
@@ -64,12 +73,12 @@ export default function About() {
             transition={{ duration: 1 }}
             style={{
               textAlign: "center",
-              marginBottom: "60px",
+              marginBottom: isMobile ? "40px" : "60px",
             }}
           >
             <h1
               style={{
-                fontSize: "3rem",
+                fontSize: isMobile ? "2rem" : "3rem",
                 fontWeight: "bold",
                 marginBottom: "20px",
               }}
@@ -78,7 +87,7 @@ export default function About() {
             </h1>
             <p
               style={{
-                fontSize: "1.2rem",
+                fontSize: isMobile ? "1rem" : "1.2rem",
                 maxWidth: "800px",
                 marginInline: "auto",
                 lineHeight: "1.6",
@@ -99,7 +108,7 @@ export default function About() {
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
               gap: "20px",
-              marginBottom: "60px",
+              marginBottom: isMobile ? "40px" : "60px",
             }}
           >
             {[
@@ -120,14 +129,14 @@ export default function About() {
                   color: "black",
                 }}
               >
-                <h2 style={{ fontSize: "1.5rem", marginBottom: "10px" }}>{benefit.title}</h2>
-                <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>{benefit.desc}</p>
+                <h2 style={{ fontSize: isMobile ? "1.2rem" : "1.5rem", marginBottom: "10px" }}>{benefit.title}</h2>
+                <p style={{ fontSize: isMobile ? "0.9rem" : "1rem", lineHeight: "1.5" }}>{benefit.desc}</p>
               </motion.div>
             ))}
           </motion.div>
 
           {/* Team Section */}
-          <h2 style={{ textAlign: "center", fontSize: "2.5rem", marginBottom: "30px" }}>👩‍💻 Meet The Team</h2>
+          <h2 style={{ textAlign: "center", fontSize: isMobile ? "2rem" : "2.5rem", marginBottom: "30px" }}>👩‍💻 Meet The Team</h2>
           <div
             style={{
               display: "grid",
@@ -163,8 +172,8 @@ export default function About() {
                     border: "3px solid gray",
                   }}
                 />
-                <h3 style={{ fontSize: "1.5rem" }}>{creator.name}</h3>
-                <p style={{ fontSize: "1rem", opacity: "0.9" }}>{creator.role}</p>
+                <h3 style={{ fontSize: isMobile ? "1.2rem" : "1.5rem" }}>{creator.name}</h3>
+                <p style={{ fontSize: isMobile ? "0.9rem" : "1rem", opacity: "0.9" }}>{creator.role}</p>
               </motion.div>
             ))}
           </div>
