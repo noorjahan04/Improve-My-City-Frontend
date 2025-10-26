@@ -162,81 +162,121 @@ export default function Home() {
       </div>
 
       {/* Image Gallery + Benefits */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          padding: "2rem",
-          gap: "2rem",
-          backgroundColor: "#ffffff",
-        }}
-      >
-        {/* Gallery Section */}
 <div
   style={{
-    flex: "2",
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gridAutoRows: "250px",
-    gap: "15px",
-    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "stretch",
+    justifyContent: "center",
+    padding: "3rem 2rem",
+    gap: "2rem",
+    backgroundColor: "#f9fafb",
   }}
 >
-  {[
-    "/assets/1.png",
-    "/assets/2.png",
-    "/assets/3.png",
-    "/assets/5.png",
-    "/assets/4.png",
-  ].map((src, i) => (
-    <div
-      key={i}
-      style={{
-        overflow: "hidden",
-        borderRadius: "10px",
-        gridColumn:
-          i === 3 ? "1 / span 2" : i === 4 ? "3 / span 1" : "auto", // alternating pattern
-        height: i < 3 ? "250px" : "250px",
-      }}
-    >
-      <img
-        src={src}
-        alt={`Gallery ${i + 1}`}
+  {/* Left: Gallery Section */}
+  <div
+    className="gallery-section"
+    style={{
+      flex: "2",
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+      gap: "20px",
+      width: "100%",
+    }}
+  >
+    {[
+      "/assets/1.png",
+      "/assets/2.png",
+      "/assets/3.png",
+      "/assets/5.png",
+      "/assets/4.png",
+    ].map((src, i) => (
+      <div
+        key={i}
         style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          transition: "transform 0.5s ease",
-          cursor: "pointer",
+          overflow: "hidden",
+          borderRadius: "12px",
+          height: "220px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+          background: "#fff",
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      />
-    </div>
-  ))}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-5px)";
+          e.currentTarget.style.boxShadow = "0 6px 16px rgba(0, 0, 0, 0.15)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)";
+        }}
+      >
+        <img
+          src={src}
+          alt={`Gallery ${i + 1}`}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transition: "transform 0.5s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        />
+      </div>
+    ))}
+  </div>
+  {/* Right: Benefits */}
+  <div
+    className="benefits-section"
+    style={{
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: "1rem",
+      gap: "1rem",
+      background: "#e5e4e4",
+      borderRadius: "10px",
+    }}
+  >
+    <h2 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+      Why Use Improve My City?
+    </h2>
+    <p>📍 Report problems directly with photos and location.</p>
+    <p>🔔 Receive updates when authorities take action.</p>
+    <p>👀 See resolved issues near your neighborhood.</p>
+    <p>🤝 Build a cleaner, better, more transparent community.</p>
+    <p>🌟 Trusted by thousands of responsible citizens!</p>
+  </div>
+
+  {/* Responsive Style */}
+  <style>
+    {`
+      @media (max-width: 900px) {
+        .gallery-section {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .gallery-section, .benefits-section {
+          flex: 1 1 100%;
+        }
+        .benefits-section {
+          order: 2;
+          margin-top: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .gallery-section {
+          grid-template-columns: repeat(1, 1fr);
+        }
+      }
+    `}
+  </style>
 </div>
 
-
-        {/* Right: Benefits */}
-        <div
-          style={{
-            flex: "1",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "1rem",
-            gap: "1rem",
-            background: "#e5e4e4",
-          }}
-        >
-          <h2 style={{ fontWeight: "bold" }}>Why Use Improve My City?</h2>
-          <p>📍 Report problems directly with photos and location.</p>
-          <p>🔔 Receive updates when authorities take action.</p>
-          <p>👀 See resolved issues near your neighborhood.</p>
-          <p>🤝 Build a cleaner, better, more transparent community.</p>
-          <p>🌟 Trusted by thousands of responsible citizens!</p>
-        </div>
-      </div>
 
       {/* Testimonials */}
       <h1 style={{ textAlign: "center", fontWeight: "bold", marginTop: "60px", marginBottom: "20px" }}>
