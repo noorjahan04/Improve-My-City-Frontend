@@ -7,19 +7,20 @@ export default function Sidebar({ activeSection, setActiveSection }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [user, setUser] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Track window resize
+  // ✅ Track window resize properly
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) setMenuOpen(false); // Close menu when resizing back to desktop
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isMobile = windowWidth <= 768;
-
-  // Fetch user profile
+  // ✅ Fetch user
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) return;
@@ -42,7 +43,7 @@ export default function Sidebar({ activeSection, setActiveSection }) {
     padding: "0.8rem 1rem",
     display: "block",
     borderRadius: "8px",
-    margin: "0.1rem 0",
+    margin: "0.2rem 0",
     transition: "all 0.2s",
     cursor: "pointer",
     fontWeight: "bold",
@@ -57,13 +58,12 @@ export default function Sidebar({ activeSection, setActiveSection }) {
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     display: menuOpen ? "block" : "none",
-    zIndex: 999,
-    cursor: "pointer",
+    zIndex: 998,
   };
 
   return (
     <>
-      {/* Hamburger icon for mobile */}
+      {/* ✅ Hamburger Icon for Mobile */}
       {isMobile && (
         <div
           onClick={() => setMenuOpen(!menuOpen)}
@@ -71,9 +71,13 @@ export default function Sidebar({ activeSection, setActiveSection }) {
             position: "fixed",
             top: "15px",
             left: "15px",
-            zIndex: 1100,
-            fontSize: "24px",
-            color: "#737373ff",
+            zIndex: 1101,
+            fontSize: "28px",
+            color: "#4CAF50",
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            padding: "6px 8px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
             cursor: "pointer",
           }}
         >
@@ -81,19 +85,28 @@ export default function Sidebar({ activeSection, setActiveSection }) {
         </div>
       )}
 
-      {/* Overlay for mobile */}
-      {isMobile && <div style={overlayStyle} onClick={() => setMenuOpen(false)}></div>}
+      {/* ✅ Overlay when menu open */}
+      {isMobile && menuOpen && (
+        <div style={overlayStyle} onClick={() => setMenuOpen(false)}></div>
+      )}
 
-      {/* Sidebar */}
+      {/* ✅ Sidebar */}
       <div
         style={{
           ...sidebarStyle,
-          left: isMobile ? (menuOpen ? 0 : "-260px") : 0,
-          transition: "left 0.3s ease",
+          left: isMobile ? (menuOpen ? "0" : "-260px") : "0",
+          transition: "left 0.3s ease-in-out",
+          boxShadow: isMobile && menuOpen ? "2px 0 10px rgba(0,0,0,0.5)" : "none",
         }}
       >
-        {/* Top Profile */}
-        <div style={{ padding: "0.5rem", borderBottom: "1px solid #444", textAlign: "center" }}>
+        {/* Profile Section */}
+        <div
+          style={{
+            padding: "1rem 0.5rem",
+            borderBottom: "1px solid #444",
+            textAlign: "center",
+          }}
+        >
           {user ? (
             <>
               <img
@@ -101,7 +114,7 @@ export default function Sidebar({ activeSection, setActiveSection }) {
                 alt="Profile"
                 style={{
                   borderRadius: "50%",
-                  marginBottom: "0.2rem",
+                  marginBottom: "0.5rem",
                   width: "80px",
                   height: "80px",
                   objectFit: "cover",
@@ -116,17 +129,14 @@ export default function Sidebar({ activeSection, setActiveSection }) {
         </div>
 
         {/* Menu Links */}
-        <div style={{ marginTop: "0.1rem", flex: 1 }}>
-          {[
-            "Dashboard",
-            "Support",
-          ].map((menu) => (
+        <div style={{ marginTop: "0.5rem", flex: 1 }}>
+          {["Dashboard", "Support"].map((menu) => (
             <div
               key={menu}
               style={linkStyle(menu)}
               onClick={() => {
                 setActiveSection(menu);
-                if (isMobile) setMenuOpen(false); // auto-close on mobile
+                if (isMobile) setMenuOpen(false);
               }}
             >
               {menu}
@@ -134,7 +144,7 @@ export default function Sidebar({ activeSection, setActiveSection }) {
           ))}
         </div>
 
-        {/* Bottom Settings / Logout */}
+        {/* Bottom Section */}
         <div style={{ marginTop: "auto" }}>
           <div
             style={linkStyle("Profile")}
@@ -146,7 +156,12 @@ export default function Sidebar({ activeSection, setActiveSection }) {
             Profile Settings
           </div>
           <div
-            style={{ ...linkStyle("Logout"), backgroundColor: "#ff4d4d", textAlign: "center", marginTop: "0.5rem" }}
+            style={{
+              ...linkStyle("Logout"),
+              backgroundColor: "#ff4d4d",
+              textAlign: "center",
+              marginTop: "0.5rem",
+            }}
             onClick={() => {
               localStorage.removeItem("token");
               navigate("/");
@@ -162,12 +177,11 @@ export default function Sidebar({ activeSection, setActiveSection }) {
 
 const sidebarStyle = {
   width: "250px",
-  minHeight: "98vh",
+  minHeight: "100vh",
   backgroundColor: "#111",
   padding: "0.5rem",
   position: "fixed",
   top: 0,
-  left: 0,
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
