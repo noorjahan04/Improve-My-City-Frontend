@@ -158,6 +158,7 @@ export default function Dashboard() {
 const mainContainer = {
   display: "flex",
   minHeight: "100vh",
+  fontWeight:"bold"
 };
 
 const hamburgerStyle = {
@@ -169,7 +170,7 @@ const hamburgerStyle = {
   color: "#000000ff",
   backgroundColor: "#fff",
   borderRadius: "8px",
-  padding: "6px 8px",
+  padding: "0px 5px",
   cursor: "pointer",
   boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
 };
@@ -194,7 +195,7 @@ const menuStyle = {
   position: "fixed",
   top: 0,
   bottom: 0,
-  zIndex: 1000,
+  zIndex: 1001,
 };
 
 const userInfoStyle = {
@@ -218,7 +219,7 @@ const menuItemStyle = (isActive) => ({
   cursor: "pointer",
   backgroundColor: isActive ? "#222" : "transparent",
   color: isActive ? "#4CAF50" : "#fff",
-  fontWeight: isActive ? "bold" : "normal",
+  fontWeight:"bold" ,
 });
 
 const logoutButtonStyle = {
@@ -234,6 +235,7 @@ const logoutButtonStyle = {
 
 const contentStyle = (isMobile) => ({
   flex: 1,
+  fontWeight:"bold",
   padding: "2rem",
   marginLeft: isMobile ? "0" : "250px", // responsive margin
   transition: "margin-left 0.3s ease-in-out",

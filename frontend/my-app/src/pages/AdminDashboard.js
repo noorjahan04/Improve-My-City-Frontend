@@ -21,6 +21,18 @@ export default function AdminDashboard() {
   const [filterRole, setFilterRole] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // --- NEW: track window width for responsiveness ---
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const isMobile = windowWidth <= 768;
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // --- Fetching data ---
   useEffect(() => {
     if (!token) return;
@@ -64,7 +76,10 @@ export default function AdminDashboard() {
   }, [token]);
 
   // --- Handlers ---
-  const handleMenuClick = (menu) => setActiveSection(menu);
+  const handleMenuClick = (menu) => {
+    setActiveSection(menu);
+    setMobileMenuOpen(false);
+  };
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
@@ -106,17 +121,36 @@ export default function AdminDashboard() {
   // --- Styles ---
   const tableStyle = { width: "100%", borderCollapse: "separate", borderSpacing: 0, marginTop: "10px", backgroundColor: "#fff", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", borderRadius: "10px", overflow: "hidden", fontSize: "0.95rem", color: "#333" };
   const thStyle = { backgroundColor: "#020202ff", color: "#fff", textAlign: "left", padding: "12px 15px", fontWeight: "bold" };
-  const tdStyle = { padding: "12px 15px", borderBottom: "1px solid #eee" };
+  const tdStyle = { padding: "12px 15px", borderBottom: "1px solid #eee", wordBreak: "break-word" };
   const trStyle = (idx) => ({ backgroundColor: idx % 2 === 0 ? "#f9f9f9" : "#fff", transition: "background-color 0.2s" });
-  const cardStyle = { backgroundColor: "#fff", flex: "1 1 200px", padding: "20px", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", textAlign: "center", fontWeight: "bold", fontSize: "18px" };
+  const cardStyle = { backgroundColor: "#fff", flex: "1 1 200px", padding: "20px", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", textAlign: "center", fontWeight: "bold", fontSize: "18px", minWidth: "120px" };
   const sectionTitle = { color: "#333", marginBottom: "15px" };
-  const sidebarStyle = { width: "250px", minHeight: "100vh", backgroundColor: "#111", padding: "0.5rem", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "fixed", left: 0, top: 0 };
+
+  const sidebarStyle = {
+    width: "250px",
+    minHeight: "100vh",
+    backgroundColor: "#111",
+    padding: "0.5rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    position: "fixed",
+    left: 0,
+    top: 0,
+    transition: "all 0.3s",
+  };
+
   const profileStyle = { padding: "0.5rem", borderBottom: "1px solid #444", textAlign: "center" };
   const profilePicStyle = { borderRadius: "50%", marginBottom: "0.2rem", width: "80px", height: "80px", objectFit: "cover" };
   const menuItemStyle = isActive => ({ textDecoration: "none", color: isActive ? "#4CAF50" : "#fff", padding: "0.8rem 1rem", display: "block", borderRadius: "8px", margin: "0.4rem 0", cursor: "pointer", fontWeight: "bold", backgroundColor: isActive ? "#222" : "transparent", transition: "all 0.2s" });
   const bottomLinkStyle = (isActive, isLogout = false) => ({ textDecoration: "none", color: "#fff", padding: "0.8rem 1rem", display: "block", borderRadius: "8px", margin: "0.4rem 0", cursor: "pointer", fontWeight: "bold", backgroundColor: isLogout ? "#ff4d4d" : isActive ? "#222" : "transparent", textAlign: "center", transition: "all 0.2s" });
 
-  // --- Render Tables ---
+  const mainWrapper = { marginLeft: isMobile ? "0" : "260px", padding: "50px", flex: 1, minWidth: 0, paddingTop: isMobile ? "80px" : "50px" };
+
+  const menuSections = ["Dashboard", "Users", "Employees", "Tickets", "Categories", "Profile"];
+
+  // --- Render Tables remain same as your code, just use `isMobile` if you want to hide columns ---
+     // --- Render Tables ---
   const renderUsersTable = () => {
     const filteredUsers = users.filter(u => {
       const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) || u.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -590,44 +624,68 @@ export default function AdminDashboard() {
   );
 };
 
-
-  // --- Main render ---
+  // --- Sidebar & Mobile menu ---
   return (
-    <div style={{ display: "flex" }}>
-      <div style={sidebarStyle}>
-        <div>
-          <div style={profileStyle}>
-            {user?.profilePic && <img src={user.profilePic} alt="Profile" style={profilePicStyle} />}
-            <p style={{ color: "#fff", fontWeight: "bold" }}>{user?.name || "Admin"}</p>
+    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+      {/* Sidebar / Desktop menu */}
+      {!isMobile && (
+        <div style={sidebarStyle}>
+          <div>
+            <div style={profileStyle}>
+              {user?.profilePic && <img src={user.profilePic} alt="Profile" style={profilePicStyle} />}
+              <p style={{ color: "#fff", fontWeight: "bold" }}>{user?.name || "Admin"}</p>
+            </div>
+            {menuSections.map(section => (
+              <div key={section} style={menuItemStyle(activeSection === section)} onClick={() => handleMenuClick(section)}>{section}</div>
+            ))}
           </div>
-          {["Dashboard", "Users", "Employees", "Tickets", "Categories", "Profile"].map(section => (
+          <div style={{ padding: "0.5rem" }}>
+            <div style={bottomLinkStyle(false, true)} onClick={handleLogout}>Logout</div>
+          </div>
+        </div>
+      )}
+
+      {/* Top mobile menu */}
+      {isMobile && (
+        <div style={{
+          display: "flex",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          backgroundColor: "#111",
+          zIndex: 1000,
+          padding: "0.5rem",
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}>
+          <div style={{ color: "#fcf4f4ff", fontWeight: "bold" }}>{user?.name || "Admin"}</div>
+          <div>
+            <button onClick={() => setMobileMenuOpen(prev => !prev)} style={{ marginRight:"20px",padding: "6px 10px", borderRadius: "6px", border: "none", cursor: "pointer" }}>Menu</button>
+          </div>
+        </div>
+      )}
+
+      {mobileMenuOpen && isMobile && (
+        <div style={{ position: "fixed", top: "50px", left: 0, width: "100%", backgroundColor: "#111", zIndex: 999, padding: "1rem" }}>
+          {menuSections.map(section => (
             <div key={section} style={menuItemStyle(activeSection === section)} onClick={() => handleMenuClick(section)}>{section}</div>
           ))}
-        </div>
-        <div style={{ padding: "0.5rem" }}>
           <div style={bottomLinkStyle(false, true)} onClick={handleLogout}>Logout</div>
         </div>
-      </div>
+      )}
 
-      <div style={{ marginLeft: "260px", padding: "50px", flex: 1 }}>
+      {/* Main content */}
+      <div style={mainWrapper}>
         {activeSection === "Dashboard" && (
           <div>
-      {/* Stats cards */}
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "30px" }}>
-        <div style={cardStyle}>Users: {stats.users}</div>
-        <div style={cardStyle}>Employees: {stats.employees}</div>
-        <div style={cardStyle}>Tickets: {stats.tickets}</div>
-        <div style={cardStyle}>Categories: {stats.categories}</div>
-      </div>
-
-      {/* Tickets table */}
-      <div>
-        <h2 style={{ marginBottom: "10px" }}>Recent Tickets</h2>
-        {renderTicketsTable()}
-      </div>
-    </div>
-
-          
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+              <div style={cardStyle}>Users: {stats.users}</div>
+              <div style={cardStyle}>Employees: {stats.employees}</div>
+              <div style={cardStyle}>Tickets: {stats.tickets}</div>
+              <div style={cardStyle}>Categories: {stats.categories}</div>
+            </div>
+          </div>
         )}
         {activeSection === "Users" && renderUsersTable()}
         {activeSection === "Employees" && renderEmployeesTable()}
@@ -638,3 +696,6 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+
+
