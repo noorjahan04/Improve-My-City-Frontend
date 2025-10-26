@@ -25,7 +25,7 @@ export default function Sidebar({ activeSection, setActiveSection }) {
       if (!token) return;
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/profile",
+          "https://improve-my-city-backend-hj52.onrender.com/api/profile",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(res.data.user);

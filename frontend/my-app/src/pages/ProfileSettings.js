@@ -106,7 +106,7 @@ export default function ProfileSettings() {
   const handleSubmitReview = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/review",
+        "https://improve-my-city-backend-hj52.onrender.com/api/review",
         { title, comment, rating },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
