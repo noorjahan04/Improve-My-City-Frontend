@@ -226,28 +226,81 @@ export default function Home() {
     ))}
   </div>
   {/* Right: Benefits */}
-  <div
-    className="benefits-section"
+ <div
+  className="benefits-section"
+  style={{
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    padding: "2rem",
+    gap: "1rem",
+    background: "#e5e4e4",
+    borderRadius: "10px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+  }}
+>
+  <h2
     style={{
-      flex: "1",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      padding: "1rem",
-      gap: "1rem",
-      background: "#e5e4e4",
-      borderRadius: "10px",
+      fontWeight: "bold",
+      fontSize: "1.8rem",
+      textAlign: "center",
+      color: "#333",
     }}
   >
-    <h2 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
-      Why Use Improve My City?
-    </h2>
+    Why Use <span style={{ color: "#FB6F92" }}>Improve My City?</span>
+  </h2>
+
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "0.75rem",
+      fontSize: "1.05rem",
+      color: "#444",
+      lineHeight: "1.6",
+    }}
+  >
     <p>📍 Report problems directly with photos and location.</p>
     <p>🔔 Receive updates when authorities take action.</p>
     <p>👀 See resolved issues near your neighborhood.</p>
     <p>🤝 Build a cleaner, better, more transparent community.</p>
     <p>🌟 Trusted by thousands of responsible citizens!</p>
   </div>
+
+  {/* Responsive styles */}
+  <style>
+    {`
+      @media (max-width: 768px) {
+        .benefits-section {
+          padding: 1.5rem;
+          text-align: center;
+        }
+        .benefits-section h2 {
+          font-size: 1.5rem;
+        }
+        .benefits-section p {
+          font-size: 0.95rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .benefits-section {
+          padding: 1rem;
+          border-radius: 8px;
+        }
+        .benefits-section h2 {
+          font-size: 1.3rem;
+        }
+        .benefits-section p {
+          font-size: 0.9rem;
+          line-height: 1.5;
+        }
+      }
+    `}
+  </style>
+</div>
+
 
   {/* Responsive Style */}
   <style>
