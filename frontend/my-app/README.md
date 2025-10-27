@@ -1,70 +1,79 @@
-# Getting Started with Create React App
+# 🏙️ Improve My City
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Improve My City** is a web platform that allows citizens to raise complaints, track their progress, and help the administration improve city services.  
+Built using **React (Frontend)** and **Node.js + Express (Backend)**, with **MongoDB** as the database.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Live Links
 
-### `npm start`
+- **Frontend:** [https://improve-my-city-frontend.vercel.app](https://improve-my-city-frontend.vercel.app)  
+- **Backend:** [https://improve-my-city-backend.onrender.com](https://improve-my-city-backend.onrender.com)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🔐 Default Login Credentials
 
-### `npm test`
+| Role | Email | Password |
+|------|--------|-----------|
+| 🧑‍💼 Admin | admin@imcity.com | admin123 |
+| 👨‍🔧 Employee | employee@imcity.com | emp123 |
+| 👷 Sub-Employee | subemployee@imcity.com | sub123 |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+> ⚠️ **Note:** These accounts are for testing/demo purposes only.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🧩 Important — User Creation Rules
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+When creating **new users** (Admin, Employee, Sub-Employee), please follow these rules to ensure the system recognizes the correct role:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+| Role | Email Must Start With | Example |
+|------|-----------------------|----------|
+| Admin | `admin` | `admin_john@imcity.com` |
+| Employee | `employee` | `employee_raj@imcity.com` |
+| Sub-Employee | `subemployee` | `subemployee_kumar@imcity.com` |
 
-### `npm run eject`
+> 💡 This naming rule is **required** because the system identifies user roles based on the email prefix during registration and login.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## ✨ Features
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Citizen complaint submission with photo upload  
+- Category and subcategory-based complaint routing  
+- Real-time complaint tracking and status updates  
+- Role-based dashboards (Admin, Employee, Sub-Employee)  
+- Complaint review and feedback system  
+- Analytics and report view for admin users  
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 🧠 Tech Stack
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Frontend:** React, Axios, CSS  
+- **Backend:** Node.js, Express.js, MongoDB  
+- **Authentication:** JWT  
+- **Deployment:** Render (Backend), Vercel (Frontend)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## ⚙️ Run Locally
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/improve-my-city.git
 
-### Analyzing the Bundle Size
+# Move to project folder
+cd improve-my-city
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# Install dependencies
+npm install
 
-### Making a Progressive Web App
+# Run backend
+cd backend
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Run frontend
+cd frontend
+npm start
