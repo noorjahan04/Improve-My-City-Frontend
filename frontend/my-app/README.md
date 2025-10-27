@@ -16,9 +16,9 @@ Built using **React (Frontend)** and **Node.js + Express (Backend)**, with **Mon
 
 | Role | Email | Password |
 |------|--------|-----------|
-| 🧑‍💼 Admin | admin@imcity.com | admin123 |
-| 👨‍🔧 Employee | employee@imcity.com | emp123 |
-| 👷 Sub-Employee | subemployee@imcity.com | sub123 |
+| 🧑‍💼 Admin | mcaprojecttestemail@imcity.com | admin1234 |
+| 👨‍🔧 Employee | employee@imcity.com | admin1234 |
+| 👷 Sub-Employee | subemployee@imcity.com | admin1234 |
 
 > ⚠️ **Note:** These accounts are for testing/demo purposes only.
 
