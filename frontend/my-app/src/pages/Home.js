@@ -172,11 +172,11 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      {/* Image Gallery + Benefits */}
+{/* Image Gallery + Benefits */}
 <div
   style={{
     display: "flex",
+    flexDirection: window.innerWidth <= 768 ? "column" : "row",
     flexWrap: "wrap",
     alignItems: "stretch",
     justifyContent: "center",
@@ -187,12 +187,12 @@ export default function Home() {
 >
   {/* Left: Gallery Section */}
   <div
-    className="gallery-section"
     style={{
       flex: "2",
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-      gap: "20px",
+      gridTemplateColumns: window.innerWidth <= 768 ? "1fr" : "repeat(3, 1fr)",
+      gridAutoRows: "250px",
+      gap: "15px",
       width: "100%",
     }}
   >
@@ -207,19 +207,16 @@ export default function Home() {
         key={i}
         style={{
           overflow: "hidden",
-          borderRadius: "12px",
-          height: "220px",
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-          background: "#fff",
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-5px)";
-          e.currentTarget.style.boxShadow = "0 6px 16px rgba(0, 0, 0, 0.15)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)";
+          borderRadius: "10px",
+          gridColumn:
+            window.innerWidth <= 768
+              ? "auto"
+              : i === 3
+              ? "1 / span 2"
+              : i === 4
+              ? "3 / span 1"
+              : "auto",
+          height: "250px",
         }}
       >
         <img
@@ -230,6 +227,7 @@ export default function Home() {
             height: "100%",
             objectFit: "cover",
             transition: "transform 0.5s ease",
+            cursor: "pointer",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
           onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -237,49 +235,50 @@ export default function Home() {
       </div>
     ))}
   </div>
-  {/* Right: Benefits */}
- <div
-  className="benefits-section"
-  style={{
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: "2rem",
-    gap: "1rem",
-    background: "#e5e4e4",
-    borderRadius: "10px",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-  }}
->
-  <h2
-    style={{
-      fontWeight: "bold",
-      fontSize: "1.8rem",
-      textAlign: "center",
-      color: "#333",
-    }}
-  >
-    Why Use <span style={{ color: "#FB6F92" }}>Improve My City?</span>
-  </h2>
 
+  {/* Right: Benefits */}
   <div
+    className="benefits-section"
     style={{
+      flex: "1",
       display: "flex",
       flexDirection: "column",
-      gap: "0.75rem",
-      fontSize: "1.05rem",
-      color: "#444",
-      lineHeight: "1.6",
+      justifyContent: "center",
+      padding: "1rem",
+      gap: "0.2rem",
+      background: "#e5e4e4",
+      borderRadius: "10px",
+      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+      width: window.innerWidth <= 768 ? "100%" : "auto",
     }}
   >
-    <p>📍 Report problems directly with photos and location.</p>
-    <p>🔔 Receive updates when authorities take action.</p>
-    <p>👀 See resolved issues near your neighborhood.</p>
-    <p>🤝 Build a cleaner, better, more transparent community.</p>
-    <p>🌟 Trusted by thousands of responsible citizens!</p>
-  </div>
+    <h2
+      style={{
+        fontWeight: "bold",
+        fontSize: "1.8rem",
+        textAlign: "center",
+        color: "#333",
+      }}
+    >
+      Why Use <span style={{ color: "#FB6F92" }}>Improve My City?</span>
+    </h2>
 
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.75rem",
+        fontSize: "1.05rem",
+        color: "#444",
+        lineHeight: "1.6",
+      }}
+    >
+      <p>📍 Report problems directly with photos and location.</p>
+      <p>🔔 Receive updates when authorities take action.</p>
+      <p>👀 See resolved issues near your neighborhood.</p>
+      <p>🤝 Build a cleaner, better, more transparent community.</p>
+      <p>🌟 Trusted by thousands of responsible citizens!</p>
+    </div>
   {/* Responsive styles */}
   <style>
     {`

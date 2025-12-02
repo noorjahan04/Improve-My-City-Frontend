@@ -25,11 +25,11 @@ export default function AdminDashboard() {
   const [categorySearch, setCategorySearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   
-  // Mobile responsive state
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Handle window resize
+ 
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
     return () => window.removeEventListener("resize", handleResize);
   }, [sidebarOpen]);
 
-  // Close sidebar when clicking on a menu item in mobile view
+ 
   const handleMenuClick = (menu) => {
     setActiveSection(menu);
     if (isMobile) {
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // --- Fetching data ---
+  
   useEffect(() => {
     if (!token) return;
 
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
     fetchAllData();
   }, [token]);
 
-  // --- Handlers ---
+  
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
