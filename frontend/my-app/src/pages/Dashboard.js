@@ -82,10 +82,27 @@ export default function Dashboard() {
 
   return (
     <div style={mainContainer}>
-      {/* Hamburger for mobile */}
+      {/* Mobile Header with Hamburger and Logout */}
       {isMobile && (
-        <div onClick={() => setMenuOpen(!menuOpen)} style={hamburgerStyle}>
-          {menuOpen ? <FaTimes /> : <FaBars />}
+        <div style={mobileHeaderStyle}>
+          <div
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={hamburgerStyle}
+          >
+            {menuOpen ? <FaTimes /> : <FaBars />}
+          </div>
+          <div style={mobileTitleStyle}>
+            <h2 style={{ margin: 0, fontSize: "1.2rem" }}>{activeSection}</h2>
+          </div>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+            }}
+            style={mobileLogoutStyle}
+          >
+            Logout
+          </button>
         </div>
       )}
 
@@ -98,10 +115,12 @@ export default function Dashboard() {
       <div
         style={{
           ...menuStyle,
-          left: isMobile ? (menuOpen ? "0" : "-250px") : "0",
+          left: isMobile ? (menuOpen ? "0" : "-280px") : "0", // Increased negative margin to hide completely
           boxShadow:
             isMobile && menuOpen ? "2px 0 8px rgba(0,0,0,0.3)" : "none",
           transition: "left 0.3s ease-in-out",
+          top: isMobile ? "60px" : "0", // Account for mobile header
+          height: isMobile ? "calc(100% - 60px)" : "100%", // Adjust height for mobile
         }}
       >
         <div style={userInfoStyle}>
@@ -134,19 +153,22 @@ export default function Dashboard() {
           </div>
         ))}
 
-        <button
-          style={logoutButtonStyle}
-          onClick={() => {
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-          }}
-        >
-          Logout
-        </button>
+        {/* Desktop Logout Button */}
+        {!isMobile && (
+          <button
+            style={logoutButtonStyle}
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+            }}
+          >
+            Logout
+          </button>
+        )}
       </div>
 
       {/* Main Content */}
-      <div style={contentStyle(isMobile)}>
+      <div style={contentStyle(isMobile, menuOpen)}>
         {renderSection()}
         <Chatbot userId={user._id} />
       </div>
@@ -158,28 +180,72 @@ export default function Dashboard() {
 const mainContainer = {
   display: "flex",
   minHeight: "100vh",
+  position: "relative",
+  overflowX: "hidden", // Prevent horizontal scrolling
+};
+
+const mobileHeaderStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  height: "60px",
+  backgroundColor: "#fff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0 15px",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+  zIndex: 999,
 };
 
 const hamburgerStyle = {
-  position: "fixed",
-  top: "15px",
-  left: "25px",
-  zIndex: 1001,
-  fontSize: "28px",
-  color: "#000000ff",
-  backgroundColor: "#fff",
-  borderRadius: "8px",
-  padding: "6px 8px",
+  fontSize: "22px",
+  color: "#000000",
   cursor: "pointer",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+  padding: "8px",
+  borderRadius: "6px",
+  backgroundColor: "#f5f5f5",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "40px",
+  height: "40px",
+  zIndex: 1001,
+};
+
+const mobileTitleStyle = {
+  flex: 1,
+  textAlign: "center",
+  padding: "0 10px",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
+const mobileLogoutStyle = {
+  fontSize: "14px",
+  color: "#fff",
+  backgroundColor: "#e74c3c",
+  cursor: "pointer",
+  padding: "8px 12px",
+  borderRadius: "6px",
+  border: "none",
+  fontWeight: "bold",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "40px",
+  whiteSpace: "nowrap",
+  zIndex: 1001,
 };
 
 const overlayStyle = {
   position: "fixed",
-  top: 0,
+  top: "60px", // Below mobile header
   left: 0,
   width: "100%",
-  height: "100%",
+  height: "calc(100% - 60px)",
   backgroundColor: "rgba(0,0,0,0.5)",
   zIndex: 998,
 };
@@ -192,9 +258,9 @@ const menuStyle = {
   flexDirection: "column",
   padding: "1rem",
   position: "fixed",
-  top: 0,
   bottom: 0,
   zIndex: 1000,
+  overflowY: "auto",
 };
 
 const userInfoStyle = {
@@ -202,6 +268,8 @@ const userInfoStyle = {
   flexDirection: "column",
   alignItems: "center",
   marginBottom: "2rem",
+  paddingTop: "1rem",
+  textAlign: "center",
 };
 
 const profilePicStyle = {
@@ -209,6 +277,7 @@ const profilePicStyle = {
   height: "60px",
   borderRadius: "50%",
   marginBottom: "0.5rem",
+  objectFit: "cover",
 };
 
 const menuItemStyle = (isActive) => ({
@@ -219,6 +288,10 @@ const menuItemStyle = (isActive) => ({
   backgroundColor: isActive ? "#222" : "transparent",
   color: isActive ? "#4CAF50" : "#fff",
   fontWeight: isActive ? "bold" : "normal",
+  transition: "background-color 0.2s",
+  "&:hover": {
+    backgroundColor: "#222",
+  },
 });
 
 const logoutButtonStyle = {
@@ -230,27 +303,42 @@ const logoutButtonStyle = {
   color: "#fff",
   cursor: "pointer",
   fontWeight: "bold",
+  fontSize: "16px",
+  transition: "background-color 0.2s",
+  "&:hover": {
+    backgroundColor: "#c0392b",
+  },
 };
 
-const contentStyle = (isMobile) => ({
+const contentStyle = (isMobile, menuOpen) => ({
   flex: 1,
-  padding: "2rem",
-  marginLeft: isMobile ? "0" : "250px", // responsive margin
+  padding: isMobile ? "1rem" : "2rem",
+  paddingTop: isMobile ? "80px" : "2rem", // Account for mobile header
+  marginLeft: isMobile ? "0" : "250px",
   transition: "margin-left 0.3s ease-in-out",
   background: "linear-gradient(135deg, #f4f4f4, #e0e7ff)",
+  minHeight: "100vh",
+  width: "100%",
+  boxSizing: "border-box",
+  position: "relative",
+  // Ensure content takes full width on mobile
+  maxWidth: isMobile ? "100vw" : "calc(100vw - 250px)",
+  overflowX: "hidden", // Prevent horizontal scrolling
 });
 
 const cards = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
   gap: "20px",
+  width: "100%",
 };
 
-const cardStyle = (isMobile)=>({
+const cardStyle = (isMobile) => ({
   background: "linear-gradient(135deg, #ffffff, #f0f4ff)",
   borderRadius: "15px",
-  padding: "2rem",
+  padding: isMobile ? "1.5rem" : "2rem",
   boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-  marginTop: isMobile ? "100px" : "20px", // responsive margin
-  
+  marginTop: isMobile ? "10px" : "20px",
+  width: "100%",
+  boxSizing: "border-box",
 });
