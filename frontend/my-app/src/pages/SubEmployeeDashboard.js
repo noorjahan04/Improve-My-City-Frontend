@@ -21,34 +21,8 @@ const SubEmployeeDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  // Mobile responsive state
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
-      if (!mobile && sidebarOpen) {
-        setSidebarOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [sidebarOpen]);
-
-  // Close sidebar when clicking on a menu item in mobile view
-  const handleMenuClick = (menu) => {
-    setActiveSection(menu);
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
-  };
 
   // Fetch user data
   useEffect(() => {
@@ -168,26 +142,6 @@ const SubEmployeeDashboard = () => {
     document.body.removeChild(link);
   };
 
-  // --- Mobile Hamburger Menu ---
-  const renderHamburger = () => (
-    <div style={hamburgerStyle} onClick={() => setSidebarOpen(!sidebarOpen)}>
-      <div style={hamburgerLineStyle(sidebarOpen, 1)}></div>
-      <div style={hamburgerLineStyle(sidebarOpen, 2)}></div>
-      <div style={hamburgerLineStyle(sidebarOpen, 3)}></div>
-    </div>
-  );
-
-  // --- Styles that depend on isMobile ---
-  const sidebarItemStyle = (isActive) => ({
-    padding: isMobile ? "15px 20px" : "25px 35px",
-    cursor: "pointer",
-    backgroundColor: isActive ? "#222" : "transparent",
-    color: isActive ? "#4CAF50" : "#fff",
-    marginBottom: "5px",
-    borderRadius: "6px",
-    transition: "background-color 0.3s ease",
-  });
-
   if (loading) return <p>Loading...</p>;
   if (!userData) return <p>Error loading user data</p>;
 
@@ -226,14 +180,10 @@ const SubEmployeeDashboard = () => {
 
   // Filtered complaints
   const filteredComplaints = complaints.filter((c) => {
-    const userName = c?.user?.name || '';
-    const userEmail = c?.user?.email || '';
-    const problem = c?.problem || '';
-    
     const matchesSearch =
-      problem.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      userEmail.toLowerCase().includes(searchTerm.toLowerCase());
+      c.problem.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter ? c.status === statusFilter : true;
     return matchesSearch && matchesStatus;
   });
@@ -248,7 +198,7 @@ const SubEmployeeDashboard = () => {
 
         return (
           <div>
-            <div style={cardsGrid(isMobile)}>
+            <div style={cardsGrid}>
               <div style={cardStyle}>
                 <h3>Total Complaints Assigned</h3>
                 <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Category: {userData.selectedCategory?.name}</p>
@@ -372,139 +322,136 @@ const SubEmployeeDashboard = () => {
             {filteredComplaints.length === 0 ? (
               <p>No complaints match your search/filter.</p>
             ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table
-                  style={{
-                    width: "100%",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 8px",
-                    fontFamily: "Arial, sans-serif",
-                    minWidth: isMobile ? "600px" : "100%",
-                  }}
-                >
-                  <thead>
-                    <tr
-                      style={{
-                        backgroundColor: "#020202ff",
-                        color: "white",
-                        textAlign: "left",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      <th style={{ ...thStyle, padding: "12px" }}>Date</th>
-                      <th style={{ ...thStyle, padding: "12px" }}>Problem</th>
-                      <th style={{ ...thStyle, padding: "12px" }}>Status</th>
-                      <th style={{ ...thStyle, padding: "12px" }}>User</th>
-                      <th style={{ ...thStyle, padding: "12px" }}>Location</th>
-                      <th style={{ ...thStyle, padding: "12px" }}>Images</th>
-                      <th style={{ ...thStyle, padding: "12px" }}>Action</th>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "separate",
+                  borderSpacing: "0 8px",
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      backgroundColor: "#020202ff",
+                      color: "white",
+                      textAlign: "left",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <th style={{ ...thStyle, padding: "12px" }}>Date</th>
+                    <th style={{ ...thStyle, padding: "12px" }}>Problem</th>
+                    <th style={{ ...thStyle, padding: "12px" }}>Status</th>
+                    <th style={{ ...thStyle, padding: "12px" }}>User</th>
+                    <th style={{ ...thStyle, padding: "12px" }}>Location</th>
+                    <th style={{ ...thStyle, padding: "12px" }}>Images</th>
+                    <th style={{ ...thStyle, padding: "12px" }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredComplaints.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
+                        No records found.
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredComplaints.length === 0 ? (
-                      <tr>
-                        <td colSpan="7" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
-                          No records found.
+                  ) : (
+                    filteredComplaints.map((c, idx) => (
+                      <tr
+                        key={c._id}
+                        style={{
+                          backgroundColor: idx % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                          borderRadius: "8px",
+                          transition: "transform 0.2s",
+                          cursor: "default",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.01)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                      >
+                        <td style={{ ...tdStyle, padding: "12px" }}>
+                          {new Date(c.createdAt).toLocaleString()}
+                        </td>
+                        <td style={{ ...tdStyle, padding: "12px" }}>{c.problem}</td>
+                        <td style={{ ...tdStyle, padding: "12px" }}>
+                          <span
+                            style={{
+                              color:
+                                c.status === "Resolved" ? "#636e72" : c.status === "In Progress" ? "#fd7e14" : "#00b894",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {c.status}
+                          </span>
+                        </td>
+                        <td style={{ ...tdStyle, padding: "12px" }}>
+                          {c.user?.name || "N/A"} ({c.user?.email || "N/A"})
+                        </td>
+                        <td style={{ ...tdStyle, padding: "12px" }}>
+                          {c.location ? (
+                            <a
+                              href={`https://www.google.com/maps/dir/?api=1&destination=${c.location.lat},${c.location.lng}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: "#007bff", textDecoration: "underline" }}
+                            >
+                              View Directions
+                            </a>
+                          ) : (
+                            "No Location"
+                          )}
+                        </td>
+                        <td style={{ ...tdStyle, padding: "12px" }}>
+                          {c.images && c.images.length > 0 ? (
+                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                              {c.images.map((img, idx) => (
+                                <img
+                                  key={idx}
+                                  src={img}
+                                  alt={`complaint-${idx}`}
+                                  style={{
+                                    width: "60px",
+                                    height: "60px",
+                                    objectFit: "cover",
+                                    cursor: "pointer",
+                                    borderRadius: "8px",
+                                    boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
+                                    transition: "transform 0.2s",
+                                  }}
+                                  onClick={() => setMapModal({ type: "image", src: img })}
+                                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+                                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                                />
+                              ))}
+                            </div>
+                          ) : (
+                            "No Image"
+                          )}
+                        </td>
+                        <td style={{ ...tdStyle, padding: "12px" }}>
+                          <button
+                            onClick={() => markAsSolved(c._id)}
+                            disabled={c.status === "Resolved"}
+                            style={{
+                              padding: "6px 14px",
+                              borderRadius: "6px",
+                              backgroundColor: c.status === "Resolved" ? "#00f52dff" : "#f40707ff",
+                              color: "black",
+                              fontWeight:"bold",
+                              border: "none",
+                              cursor: c.status === "Resolved" ? "not-allowed" : "pointer",
+                              transition: "background 0.2s",
+                            }}
+                          >
+                            {c.status === "Resolved" ? "Completed" : "Mark Solved"}
+                          </button>
                         </td>
                       </tr>
-                    ) : (
-                      filteredComplaints.map((c, idx) => (
-                        <tr
-                          key={c._id}
-                          style={{
-                            backgroundColor: idx % 2 === 0 ? "#f9f9f9" : "#ffffff",
-                            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                            borderRadius: "8px",
-                            transition: "transform 0.2s",
-                            cursor: "default",
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.01)")}
-                          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                        >
-                          <td style={{ ...tdStyle, padding: "12px" }}>
-                            {new Date(c.createdAt).toLocaleString()}
-                          </td>
-                          <td style={{ ...tdStyle, padding: "12px" }}>{c.problem}</td>
-                          <td style={{ ...tdStyle, padding: "12px" }}>
-                            <span
-                              style={{
-                                color:
-                                  c.status === "Resolved" ? "#636e72" : c.status === "In Progress" ? "#fd7e14" : "#00b894",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {c.status}
-                            </span>
-                          </td>
-                          <td style={{ ...tdStyle, padding: "12px" }}>
-                            {c.user?.name || "N/A"} ({c.user?.email || "N/A"})
-                          </td>
-                          <td style={{ ...tdStyle, padding: "12px" }}>
-                            {c.location ? (
-                              <a
-                                href={`https://www.google.com/maps/dir/?api=1&destination=${c.location.lat},${c.location.lng}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ color: "#007bff", textDecoration: "underline" }}
-                              >
-                                View Directions
-                              </a>
-                            ) : (
-                              "No Location"
-                            )}
-                          </td>
-                          <td style={{ ...tdStyle, padding: "12px" }}>
-                            {c.images && c.images.length > 0 ? (
-                              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                                {c.images.map((img, idx) => (
-                                  <img
-                                    key={idx}
-                                    src={img}
-                                    alt={`complaint-${idx}`}
-                                    style={{
-                                      width: "60px",
-                                      height: "60px",
-                                      objectFit: "cover",
-                                      cursor: "pointer",
-                                      borderRadius: "8px",
-                                      boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
-                                      transition: "transform 0.2s",
-                                    }}
-                                    onClick={() => setMapModal({ type: "image", src: img })}
-                                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-                                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                                  />
-                                ))}
-                              </div>
-                            ) : (
-                              "No Image"
-                            )}
-                          </td>
-                          <td style={{ ...tdStyle, padding: "12px" }}>
-                            <button
-                              onClick={() => markAsSolved(c._id)}
-                              disabled={c.status === "Resolved"}
-                              style={{
-                                padding: "6px 14px",
-                                borderRadius: "6px",
-                                backgroundColor: c.status === "Resolved" ? "#00f52dff" : "#f40707ff",
-                                color: "black",
-                                fontWeight:"bold",
-                                border: "none",
-                                cursor: c.status === "Resolved" ? "not-allowed" : "pointer",
-                                transition: "background 0.2s",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {c.status === "Resolved" ? "Completed" : "Mark Solved"}
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
+
             )}
           </div>
         );
@@ -514,42 +461,18 @@ const SubEmployeeDashboard = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f4f4f4, #e0e7ff)", position: "relative" }}>
-      {/* Mobile Header with Hamburger */}
-      {isMobile && (
-        <div style={mobileHeaderStyle}>
-          {renderHamburger()}
-          <div style={mobileHeaderTitleStyle}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem" }}>{activeSection}</h3>
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "#aaa" }}>{userData?.name || "Sub-Employee"}</p>
-          </div>
-          {/* Mobile Logout Button in Header */}
-          <button 
-            onClick={handleLogout}
-            style={mobileLogoutBtnStyle}
-          >
-            Logout
-          </button>
-        </div>
-      )}
-
-      {/* Sidebar Overlay for Mobile */}
-      {isMobile && sidebarOpen && (
-        <div style={overlayStyle} onClick={() => setSidebarOpen(false)}></div>
-      )}
-
-      {/* Sidebar */}
-      <div style={sidebarStyle(isMobile, sidebarOpen)}>
+    <div style={{ display: "flex" }}>
+      <div style={sidebarStyle}>
         <div style={userInfoStyle}>
           <img
-            src={userData?.profilePic || "https://via.placeholder.com/60"}
+            src={userData.profilePic || "https://via.placeholder.com/60"}
             alt="Profile"
             style={profilePicStyle}
           />
           <div>
-            <p style={{ margin: 0, fontWeight: "bold" }}>{userData?.name || "Sub-Employee"}</p>
+            <p style={{ margin: 0, fontWeight: "bold" }}>{userData.name}</p>
             <p style={{ margin: 0, fontSize: "0.85rem", color: "#ccc" }}>
-              {userData?.email || ""}
+              {userData.email}
             </p>
           </div>
         </div>
@@ -559,34 +482,21 @@ const SubEmployeeDashboard = () => {
             <div
               key={item}
               style={sidebarItemStyle(activeSection === item)}
-              onClick={() => handleMenuClick(item)}
+              onClick={() => setActiveSection(item)}
             >
               {item}
             </div>
           ))}
         </div>
 
-        {/* Desktop Logout Button (only show on desktop) */}
-        {!isMobile && (
-          <div style={{ padding: "1rem" }}>
-            <button style={logoutButtonStyle} onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        )}
+        <div style={{ padding: "1rem" }}>
+          <button style={logoutButtonStyle} onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* Main content */}
-      <div style={mainContentStyle(isMobile, sidebarOpen)}>
-        {/* Desktop Page Title */}
-        {!isMobile && (
-          <div style={pageHeaderStyle}>
-            <h1 style={{ margin: 0 }}>{activeSection}</h1>
-          </div>
-        )}
-        
-        {renderSection()}
-      </div>
+      <div style={mainContentStyle}>{renderSection()}</div>
 
       {mapModal && (
         <div
@@ -651,138 +561,40 @@ const SubEmployeeDashboard = () => {
 export default SubEmployeeDashboard;
 
 // ==================== STYLES ====================
-const mobileHeaderStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  backgroundColor: "#111",
-  color: "#fff",
-  padding: "0.8rem 1rem",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: "1rem",
-  zIndex: 1000,
-  boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-};
-
-const mobileHeaderTitleStyle = {
+const mainContentStyle = {
   flex: 1,
-};
-
-const mobileLogoutBtnStyle = {
-  backgroundColor: "#ff4d4d",
-  color: "#fff",
-  border: "none",
-  padding: "6px 12px",
-  borderRadius: "4px",
-  fontSize: "0.8rem",
-  cursor: "pointer",
-  fontWeight: "bold",
-  whiteSpace: "nowrap",
-};
-
-const overlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  zIndex: 999,
-};
-
-const hamburgerStyle = {
-  width: "30px",
-  height: "24px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  cursor: "pointer",
-  zIndex: 1001,
-};
-
-const hamburgerLineStyle = (isOpen, lineNumber) => ({
-  height: "3px",
-  width: "100%",
-  backgroundColor: "#fff",
-  borderRadius: "3px",
-  transition: "all 0.3s ease",
-  transform: isOpen
-    ? lineNumber === 1
-      ? "rotate(45deg) translate(6px, 6px)"
-      : lineNumber === 2
-      ? "scale(0)"
-      : "rotate(-45deg) translate(6px, -6px)"
-    : "none",
-});
-
-const mainContentStyle = (isMobile, sidebarOpen) => ({
-  marginLeft: isMobile ? "0" : "250px",
-  flex: 1,
-  padding: isMobile ? "1rem" : "2rem",
-  paddingTop: isMobile ? "80px" : "2rem",
-  transition: "margin-left 0.3s ease",
+  marginLeft: "250px",
+  padding: "2rem",
   minHeight: "100vh",
   background: "linear-gradient(135deg, #f4f4f4, #e0e7ff)",
-});
-
-const pageHeaderStyle = {
-  marginBottom: "2rem",
-  paddingBottom: "1rem",
-  borderBottom: "2px solid #eee",
 };
-
-const cardsGrid = (isMobile) => ({
+const cardsGrid = {
   display: "grid",
-  gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(250px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
   gap: "20px",
   marginTop: "20px",
-});
-
+};
 const cardStyle = {
   background: "linear-gradient(135deg, #ffffff, #f0f4ff)",
   borderRadius: "15px",
-  padding: "1.5rem",
+  padding: "2rem",
   boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-  textAlign: "center",
 };
-
-const thStyle = { 
-  padding: "12px", 
-  textAlign: "left", 
-  borderBottom: "1px solid #ccc",
-  whiteSpace: "nowrap",
-  fontSize: "0.9rem",
-};
-
-const tdStyle = { 
-  padding: "12px", 
-  verticalAlign: "top", 
-  borderBottom: "1px solid #ccc",
-  fontSize: "0.9rem",
-  wordBreak: "break-word",
-};
-
-const sidebarStyle = (isMobile, isOpen) => ({
-  width: isMobile ? "250px" : "250px",
+const thStyle = { padding: "10px", textAlign: "left", borderBottom: "1px solid #ccc" };
+const tdStyle = { padding: "8px", verticalAlign: "top", borderBottom: "1px solid #ccc" };
+const sidebarStyle = {
+  width: "250px",
   minHeight: "100vh",
   background: "#111",
   color: "#fff",
   display: "flex",
   flexDirection: "column",
   paddingTop: "1rem",
-  position: isMobile ? "fixed" : "fixed",
-  left: isMobile ? (isOpen ? "0" : "-250px") : "0",
-  top: isMobile ? "60px" : "0",
-  zIndex: 1000,
-  transition: "left 0.3s ease",
-  height: isMobile ? "calc(100vh - 60px)" : "100vh",
-  overflowY: "auto",
-  fontWeight: "bold",
-});
-
+  position: "fixed",
+  fontWeight:"bold",
+  left: 0,
+  top: 0,
+};
 const userInfoStyle = {
   display: "flex",
   flexDirection: "column",
@@ -790,15 +602,20 @@ const userInfoStyle = {
   padding: "1rem",
   borderBottom: "1px solid #333",
 };
-
 const profilePicStyle = {
   width: "60px",
   height: "60px",
   borderRadius: "50%",
   marginBottom: "0.5rem",
-  objectFit: "cover",
 };
-
+const sidebarItemStyle = (isActive) => ({
+  padding: "25px 35px",
+  cursor: "pointer",
+  backgroundColor: isActive ? "#222" : "transparent",
+  color: isActive ? "#4CAF50" : "#fff",
+  marginBottom: "5px",
+  borderRadius: "6px",
+});
 const logoutButtonStyle = {
   width: "100%",
   padding: "10px",
@@ -808,5 +625,4 @@ const logoutButtonStyle = {
   color: "#fff",
   cursor: "pointer",
   fontWeight: "bold",
-  transition: "background-color 0.3s ease",
 };
