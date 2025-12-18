@@ -52,7 +52,7 @@ const Chatbot = ({ userId }) => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("https://improve-my-city-backend-hj52.onrender.com/api/chatbot", {
+      const res = await axios.post("https://city-backend-n1au.onrender.com/api/chatbot", {
         userId,
         message: userMessage,
       });

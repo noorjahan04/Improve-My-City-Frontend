@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://improve-my-city-backend-hj52.onrender.com/api/auth";
+const API = "https://city-backend-n1au.onrender.com/api/auth";
 
 export const register = (data) => axios.post(`${API}/register`, data);
 

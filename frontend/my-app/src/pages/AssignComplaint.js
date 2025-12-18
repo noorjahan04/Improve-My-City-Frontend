@@ -18,7 +18,7 @@ const AssignComplaint = () => {
     const fetchComplaints = async () => {
       try {
         const res = await axios.get(
-          "https://improve-my-city-backend-hj52.onrender.com/api/complaints/employee-category-complaints",
+          "https://city-backend-n1au.onrender.com/api/complaints/employee-category-complaints",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -33,7 +33,7 @@ const AssignComplaint = () => {
         const subEmpObj = {};
         for (let catId of categories) {
           const subRes = await axios.get(
-            `https://improve-my-city-backend-hj52.onrender.com/api/employee/sub-employees?categoryId=${catId}`,
+            `https://city-backend-n1au.onrender.com/api/employee/sub-employees?categoryId=${catId}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           subEmpObj[catId] = subRes.data;
@@ -79,7 +79,7 @@ const AssignComplaint = () => {
 
     try {
       const res = await axios.put(
-        "https://improve-my-city-backend-hj52.onrender.com/api/complaints/assign",
+        "https://city-backend-n1au.onrender.com/api/complaints/assign",
         { complaintId, employeeId: subEmployeeId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

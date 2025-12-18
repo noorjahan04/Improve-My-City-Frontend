@@ -6,7 +6,7 @@ import ProfileSettings from "./ProfileSettings";
 import SupportTicket from "./Support";
 import "leaflet/dist/leaflet.css";
 
-const BASE_URL = "https://improve-my-city-backend-hj52.onrender.com/api";
+const BASE_URL = "https://city-backend-n1au.onrender.com/api";
 
 const SubEmployeeDashboard = () => {
   const [categories, setCategories] = useState([]);

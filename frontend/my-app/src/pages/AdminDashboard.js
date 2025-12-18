@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProfileSettings from "./ProfileSettings";
 
-const BASE_URL = "https://improve-my-city-backend-hj52.onrender.com";
+const BASE_URL = "https://city-backend-n1au.onrender.com";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();

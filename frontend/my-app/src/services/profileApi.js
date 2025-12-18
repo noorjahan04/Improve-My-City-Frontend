@@ -6,19 +6,19 @@ const config = {
 };
 
 export const getProfile = async () => {
-  const res = await axios.get("https://improve-my-city-backend-hj52.onrender.com/api/profile", config);
+  const res = await axios.get("https://city-backend-n1au.onrender.com/api/profile", config);
   return res.data;
 };
 
 
 export const sendOtp = async (phone) => {
-  const res = await axios.post("https://improve-my-city-backend-hj52.onrender.com/api/profile/send-otp", { phone }, config);
+  const res = await axios.post("https://city-backend-n1au.onrender.com/api/profile/send-otp", { phone }, config);
   return res.data;
 };
 
 export const verifyOtp = async (phone, enteredOtp) => {
   const res = await axios.post(
-    "https://improve-my-city-backend-hj52.onrender.com/api/profile/verify-otp",
+    "https://city-backend-n1au.onrender.com/api/profile/verify-otp",
     { phone, enteredOtp },
     config
   );
@@ -29,7 +29,7 @@ export const verifyOtp = async (phone, enteredOtp) => {
 export const updateProfilePic = async (imageUrl) => {
   const token = localStorage.getItem("token");
   const { data } = await axios.post(
-    `https://improve-my-city-backend-hj52.onrender.com/api/profile/update-pic`,
+    `https://city-backend-n1au.onrender.com/api/profile/update-pic`,
     { imageUrl },
     { headers: { Authorization: `Bearer ${token}` } }
   );

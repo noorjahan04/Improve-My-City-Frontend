@@ -50,7 +50,7 @@ export default function Home() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get("https://improve-my-city-backend-hj52.onrender.com/api/review");
+        const res = await axios.get("https://city-backend-n1au.onrender.com/api/review");
         if (res.data.reviews && res.data.reviews.length > 0) {
           const mapped = res.data.reviews.map((r) => ({
             name: r.name || "User",

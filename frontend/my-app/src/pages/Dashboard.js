@@ -30,7 +30,7 @@ export default function Dashboard() {
         if (!token) throw new Error("No token found");
 
         const res = await axios.get(
-          "https://improve-my-city-backend-hj52.onrender.com/api/profile",
+          "https://city-backend-n1au.onrender.com/api/profile",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(res.data.user);

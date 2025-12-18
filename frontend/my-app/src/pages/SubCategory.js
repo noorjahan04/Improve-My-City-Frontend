@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const BASE_URL = "https://improve-my-city-backend-hj52.onrender.com/api";
+const BASE_URL = "https://city-backend-n1au.onrender.com/api";
 
 const SubCategoryDashboard = () => {
   const token = localStorage.getItem("token");

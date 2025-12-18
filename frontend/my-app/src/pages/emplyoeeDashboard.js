@@ -6,7 +6,7 @@ import SupportTicket from "./Support";
 import SubCategoryDashboard from "./SubCategory";
 import AssignComplaint from "./AssignComplaint";
 
-const BASE_URL = "https://improve-my-city-backend-hj52.onrender.com/api";
+const BASE_URL = "https://city-backend-n1au.onrender.com/api";
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();

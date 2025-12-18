@@ -44,7 +44,7 @@ const Complaint = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("https://improve-my-city-backend-hj52.onrender.com/api/admin/category", {
+        const res = await axios.get("https://city-backend-n1au.onrender.com/api/admin/category", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCategories(res.data);
@@ -65,7 +65,7 @@ const Complaint = () => {
       }
       try {
         const res = await axios.get(
-          "https://improve-my-city-backend-hj52.onrender.com/api/employee/selectedsubcategories",
+          "https://city-backend-n1au.onrender.com/api/employee/selectedsubcategories",
           {
             headers: { Authorization: `Bearer ${token}` },
             params: { categoryId: selectedCategory },
@@ -133,7 +133,7 @@ const Complaint = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "https://improve-my-city-backend-hj52.onrender.com/api/complaints/create",
+        "https://city-backend-n1au.onrender.com/api/complaints/create",
         {
           category: selectedCategory,
           subCategory: selectedSubCategory,
